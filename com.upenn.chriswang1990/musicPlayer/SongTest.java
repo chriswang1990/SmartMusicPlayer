@@ -28,9 +28,9 @@ public class SongTest {
     @Test
     public void testSong() {
         song2 = new Song("birthday.txt");
-        assertTrue(song instanceof Song);
-        assertTrue(song1 instanceof Song);
-        assertTrue(song2 instanceof Song);
+        assertTrue(song != null);
+        assertTrue(song1 != null);
+        assertTrue(song2 != null);
     }
 
 
