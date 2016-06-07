@@ -4,7 +4,8 @@ package musicPlayer;/*
  * Melody Player
  *
  * Authors: Allison Obourn and Marty Stepp
- * Version: Tue 2015/03/04
+ *          modified slightly by Minquan Wang
+ * Version: Wed 2016/06/01
  * 
  * This instructor-provided file represents a musical accidental:
  * sharp, flat, or natural.
@@ -23,13 +24,13 @@ public enum Accidental {
 	 */
 	public static Accidental getValueOf(String s) {
 		s = s.intern();
-		if (s == "SHARP") {
+		if (s.equals("SHARP")) {
 			return Accidental.SHARP;
 		}
-		if (s == "FLAT") {
+		if (s.equals("FLAT")) {
 			return Accidental.FLAT;
 		}
-		if (s == "NATURAL") {
+		if (s.equals("NATURAL")) {
 			return Accidental.NATURAL;
 		}
 		return null;

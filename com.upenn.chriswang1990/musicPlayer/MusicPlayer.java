@@ -179,8 +179,8 @@ public class MusicPlayer implements ActionListener, musicPlayer.StdAudio.AudioEv
 		play = new JButton("Play");
 		pause = new JButton("Pause");
 		stop = new JButton("Stop");
-		up = new JButton("Tune Up");
-		down = new JButton("Tune Down");
+		up = new JButton("Octave Up");
+		down = new JButton("Octave Down");
 		reverse = new JButton("Reverse");
 		load.setFont(compFont);
 		play.setFont(compFont);
@@ -284,7 +284,7 @@ public class MusicPlayer implements ActionListener, musicPlayer.StdAudio.AudioEv
 		reverse.addActionListener(this);
 		changeTempo.addActionListener(this);
 
-		frame.setMinimumSize(new Dimension(800,250));
+		frame.setMinimumSize(new Dimension(850,250));
 		titleLabel.setHorizontalAlignment(JLabel.CENTER);
 
 		//center the frame on the screen

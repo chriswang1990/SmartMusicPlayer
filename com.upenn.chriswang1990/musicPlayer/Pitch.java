@@ -15,28 +15,28 @@ public enum Pitch {
 	 */
 	public static Pitch getValueOf(String s) {
 		s = s.intern();
-		if (s == "A") {
+		if (s.equals("A")) {
 			return Pitch.A;
 		}
-		if (s == "B") {
+		if (s.equals("B")) {
 			return Pitch.B;
 		}
-		if (s == "C") {
+		if (s.equals("C")) {
 			return Pitch.C;
 		}
-		if (s == "D") {
+		if (s.equals("D")) {
 			return Pitch.D;
 		}
-		if (s == "E") {
+		if (s.equals("E")) {
 			return Pitch.E;
 		}
-		if (s == "F") {
+		if (s.equals("F")) {
 			return Pitch.F;
 		}
-		if (s == "G") {
+		if (s.equals("G")) {
 			return Pitch.G;
 		}
-		if (s == "R") {
+		if (s.equals("R")) {
 			return Pitch.R;
 		}
 		return null;

@@ -1,11 +1,14 @@
 //Project authors: Minquan Wang & Guanqing Hao
 
-package musicPlayer;/*
+package musicPlayer;
+
+/*
  * Melody Player
  *
  * Authors: Robert Sedgewick and Kevin Wayne (see comments below);
  *          modified slightly by Allison Obourn and Marty Stepp
- * Version: Tue 2015/03/04
+ *          modified slightly by Minquan Wang
+ * Version: Wed 2016/06/01
  * 
  * This instructor-provided file implements the underlying audio system 
  */
