@@ -1,0 +1,11 @@
+Test musicPlayer.Song
+Guanqing
+8
+0.5 C 4 NATURAL false
+0.5 D 4 SHARP false
+0.5 G 4 NATURAL false
+0.5 R false
+0.5 C 5 NATURAL true
+0.5 E 5 FLAT false
+0.5 G 5 NATURAL false
+0.5 C 6 NATURAL true

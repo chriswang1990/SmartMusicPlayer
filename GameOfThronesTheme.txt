@@ -1,0 +1,44 @@
+Game of Thrones
+Ramin Djawadi
+41
+0.4 G 6 NATURAL true
+0.4 C 6 NATURAL false
+0.2 E 6 FLAT false
+0.2 F 6 NATURAL true
+0.4 G 6 NATURAL true
+0.4 C 6 NATURAL false
+0.2 E 6 NATURAL false
+0.2 F 6 NATURAL true
+1.2 G 5 NATURAL false
+1.2 C 5 NATURAL false
+0.2 E 5 FLAT false
+0.2 F 5 NATURAL false
+0.8 G 5 NATURAL false
+0.8 C 5 NATURAL false
+0.2 E 5 FLAT false
+0.2 F 5 NATURAL false
+0.4 D 5 NATURAL true
+0.4 G 4 NATURAL false
+0.2 B 4 FLAT false
+0.2 C 5 NATURAL true
+0.4 D 5 NATURAL true
+0.4 G 4 NATURAL false
+0.2 B 4 FLAT false
+0.2 C 5 NATURAL true
+1.2 F 5 NATURAL false
+1.2 B 4 FLAT false
+0.2 E 5 FLAT false
+0.2 D 5 NATURAL false
+0.8 F 5 NATURAL false
+0.8 B 4 FLAT false
+0.2 E 5 FLAT false
+0.2 D 5 NATURAL false
+0.4 C 5 NATURAL true
+0.4 G 4 NATURAL false
+0.2 A 4 FLAT false
+0.2 B 4 FLAT true
+0.4 C 5 NATURAL true
+0.4 G 4 NATURAL false
+0.2 A 4 FLAT false
+0.2 B 4 FLAT true
+1.2 C 5 NATURAL false
