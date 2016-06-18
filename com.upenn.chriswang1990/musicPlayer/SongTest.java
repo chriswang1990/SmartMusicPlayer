@@ -1,6 +1,7 @@
 //Project authors: Minquan Wang & Guanqing Hao
 
 package musicPlayer;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,6 +14,7 @@ public class SongTest {
 
     /**
      * set up method for the musicPlayer.Song class
+     *
      * @throws Exception
      */
     @Before
