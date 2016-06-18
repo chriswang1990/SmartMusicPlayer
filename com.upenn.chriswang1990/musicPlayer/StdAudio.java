@@ -23,11 +23,13 @@ package musicPlayer;
  *   - Assumes the audio is monaural, with sampling rate of 44,100.
  *************************************************************************/
 
-import java.applet.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import javax.sound.sampled.*;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.SourceDataLine;
 
 /**
  * <i>Standard audio</i>. This class provides a basic capability for creating,
@@ -67,7 +69,7 @@ public final class StdAudio {
 	}
 	
 	public static class AudioEvent {
-		public static enum Type { PLAY, LOOP, PAUSE, UNPAUSE, STOP, MUTE, UNMUTE }
+		public enum Type { PLAY, LOOP, PAUSE, UNPAUSE, STOP, MUTE, UNMUTE }
 		
 		private Type type;
 		private Note note;
@@ -107,7 +109,7 @@ public final class StdAudio {
 		}
 	}
 	
-	public static interface AudioEventListener {
+	public interface AudioEventListener {
 		void onAudioEvent(AudioEvent event);
 	}
 	
@@ -133,7 +135,7 @@ public final class StdAudio {
 			// up exactly with when
 			// the sound card decides to push out its samples.
 			buffer = new byte[SAMPLE_BUFFER_SIZE * BYTES_PER_SAMPLE / 3];
-			listeners = new HashSet<AudioEventListener>();
+			listeners = new HashSet<>();
 		} catch (Exception e) {
 			System.err.println("Error initializing musicPlayer.StdAudio audio system:");
 			e.printStackTrace();
@@ -172,29 +174,6 @@ public final class StdAudio {
 	 */
 	public static boolean isPaused() {
 		return paused;
-	}
-
-	/**
-	 * Loop a sound file (in .wav or .au format) in a background thread.
-	 */
-	public static void loop(String filename) {
-		if (muted) {
-			return;
-		}
-		URL url = null;
-		try {
-			File file = new File(filename);
-			if (file.canRead())
-				url = file.toURI().toURL();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		// URL url = musicPlayer.StdAudio.class.getResource(filename);
-		if (url == null)
-			throw new RuntimeException("audio " + filename + " not found");
-		AudioClip clip = Applet.newAudioClip(url);
-		clip.loop();
-		notifyListeners(new AudioEvent(AudioEvent.Type.LOOP));
 	}
 
 	/**
@@ -253,53 +232,9 @@ public final class StdAudio {
 	 * Write an array of samples (between -1.0 and +1.0) to standard audio. If a
 	 * sample is outside the range, it will be clipped.
 	 */
-	public static void play(double[] input, double duration) {
-		play(input);
-		notifyListeners(new AudioEvent(AudioEvent.Type.PLAY, duration));
-	}
-
-	/**
-	 * Write an array of samples (between -1.0 and +1.0) to standard audio. If a
-	 * sample is outside the range, it will be clipped.
-	 */
 	public static void play(Note note, double[] input, double duration) {
 		play(input);
 		notifyListeners(new AudioEvent(AudioEvent.Type.PLAY, note, duration));
-	}
-
-	/**
-	 * Play a sound file (in .wav or .au format) in a background thread.
-	 */
-	public static void play(String filename) {
-		prePlay();
-		URL url = null;
-		try {
-			File file = new File(filename);
-			if (file.canRead())
-				url = file.toURI().toURL();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		// URL url = musicPlayer.StdAudio.class.getResource(filename);
-		if (url == null)
-			throw new RuntimeException("audio " + filename + " not found");
-		AudioClip clip = Applet.newAudioClip(url);
-		clip.play();
-	}
-
-	/**
-	 * Read audio samples from a file (in .wav or .au format) and return them as
-	 * a double array with values between -1.0 and +1.0.
-	 */
-	public static double[] read(String filename) {
-		byte[] data = readByte(filename);
-		int N = data.length;
-		double[] d = new double[N / 2];
-		for (int i = 0; i < N / 2; i++) {
-			d[i] = ((short) (((data[2 * i + 1] & 0xFF) << 8) + (data[2 * i] & 0xFF)))
-					/ ((double) MAX_16_BIT);
-		}
-		return d;
 	}
 
 	/**
@@ -308,37 +243,6 @@ public final class StdAudio {
 	 */
 	public static void removeAudioEventListener(AudioEventListener listener) {
 		listeners.remove(listener);
-	}
-	
-	/**
-	 * Save the double array as a sound file (using .wav or .au format).
-	 */
-	public static void save(String filename, double[] input) {
-		// assumes 44,100 samples per second
-		// use 16-bit audio, mono, signed PCM, little Endian
-		AudioFormat format = new AudioFormat(SAMPLE_RATE, 16, 1, true, false);
-		byte[] data = new byte[2 * input.length];
-		for (int i = 0; i < input.length; i++) {
-			int temp = (short) (input[i] * MAX_16_BIT);
-			data[2 * i + 0] = (byte) temp;
-			data[2 * i + 1] = (byte) (temp >> 8);
-		}
-
-		// now save the file
-		try {
-			ByteArrayInputStream bais = new ByteArrayInputStream(data);
-			AudioInputStream ais = new AudioInputStream(bais, format, input.length);
-			if (filename.endsWith(".wav") || filename.endsWith(".WAV")) {
-				AudioSystem.write(ais, AudioFileFormat.Type.WAVE, new File(filename));
-			} else if (filename.endsWith(".au") || filename.endsWith(".AU")) {
-				AudioSystem.write(ais, AudioFileFormat.Type.AU, new File(filename));
-			} else {
-				throw new RuntimeException("File format not supported: " + filename);
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-			System.exit(1);
-		}
 	}
 
 	/**
@@ -382,37 +286,6 @@ public final class StdAudio {
 				// empty
 			}
 		}
-	}
-
-	/*
-	 * Return data as a byte array.
-	 */
-	private static byte[] readByte(String filename) {
-		byte[] data = null;
-		AudioInputStream ais = null;
-		try {
-
-			// try to read from file
-			File file = new File(filename);
-			if (file.exists()) {
-				ais = AudioSystem.getAudioInputStream(file);
-				data = new byte[ais.available()];
-				ais.read(data);
-			}
-
-			// try to read from URL
-			else {
-				URL url = StdAudio.class.getResource(filename);
-				ais = AudioSystem.getAudioInputStream(url);
-				data = new byte[ais.available()];
-				ais.read(data);
-			}
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			throw new RuntimeException("Could not read " + filename);
-		}
-
-		return data;
 	}
 
 	/**
