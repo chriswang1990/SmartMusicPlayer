@@ -33,6 +33,8 @@ public class Note {
     private Accidental accidental;   // note's accidental: sharp, flat, natural
     private boolean repeat;          // true if this note starts/ends a repeated section
 
+    private StdAudio stdAudio = StdAudio.getInstance();
+
     /**
      * Constructs a musicPlayer.Note with the given information.
      *
@@ -151,7 +153,7 @@ public class Note {
         if (pitch == Pitch.R) {
             // play no sound (but do delay) if the note is a rest
             // musicPlayer.StdAudio.play(musicPlayer.StdAudio.note(0, duration, 0.5), duration);
-            StdAudio.play(this, StdAudio.note(0, duration, 0.5), duration);
+            stdAudio.play(this, stdAudio.note(0, duration, 0.5), duration);
         } else {
             char note = pitch.toString().charAt(0);
             int steps = (note - 'A') * 2;
@@ -184,7 +186,7 @@ public class Note {
 
             // play the note!
             double hz = 440.0 * Math.pow(2, steps / 12.0);
-            StdAudio.play(this, StdAudio.note(hz, duration, 0.5), duration);
+            stdAudio.play(this, stdAudio.note(hz, duration, 0.5), duration);
         }
     }
 

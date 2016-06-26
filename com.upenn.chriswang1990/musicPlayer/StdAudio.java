@@ -68,6 +68,12 @@ public final class StdAudio {
         init();
     }
 
+    private static StdAudio instance = new StdAudio();
+
+    public static StdAudio getInstance() {
+        return instance;
+    }
+
     public static class AudioEvent {
         public enum Type {PLAY, LOOP, PAUSE, UNPAUSE, STOP, MUTE, UNMUTE}
 
@@ -109,7 +115,7 @@ public final class StdAudio {
         void onAudioEvent(AudioEvent event);
     }
 
-    public static void addAudioEventListener(AudioEventListener listener) {
+    public void addAudioEventListener(AudioEventListener listener) {
         listeners.add(listener);
     }
 
@@ -146,14 +152,14 @@ public final class StdAudio {
      * Removes all audio event listeners from being notified of future
      * audio events, if any were present.  If none were present, has no effect.
      */
-    public static void clearAudioEventListeners() {
+    public void clearAudioEventListeners() {
         listeners.clear();
     }
 
     /**
      * Close standard audio.
      */
-    public static void close() {
+    public void close() {
         line.drain();
         line.stop();
     }
@@ -161,14 +167,14 @@ public final class StdAudio {
     /**
      * Returns whether the audio system is currently muted.
      */
-    public static boolean isMuted() {
+    public boolean isMuted() {
         return muted;
     }
 
     /**
      * Returns whether the audio system is currently paused.
      */
-    public static boolean isPaused() {
+    public boolean isPaused() {
         return paused;
     }
 
@@ -176,7 +182,7 @@ public final class StdAudio {
      * Create a note (sine wave) of the given frequency (Hz), for the given
      * duration (seconds) scaled to the given volume (amplitude).
      */
-    public static double[] note(double hz, double duration, double amplitude) {
+    public double[] note(double hz, double duration, double amplitude) {
         int N = (int) (StdAudio.SAMPLE_RATE * duration);
         double[] a = new double[N + 1];
         for (int i = 0; i <= N; i++)
@@ -188,7 +194,7 @@ public final class StdAudio {
      * Write one sample (between -1.0 and +1.0) to standard audio. If the sample
      * is outside the range, it will be clipped.
      */
-    public static void play(double in) {
+    public void play(double in) {
         if (muted) {
             return;
         }
@@ -217,7 +223,7 @@ public final class StdAudio {
      * Write an array of samples (between -1.0 and +1.0) to standard audio. If a
      * sample is outside the range, it will be clipped.
      */
-    public static void play(double[] input) {
+    public void play(double[] input) {
         prePlay();
         for (double i : input) {
             play(i);
@@ -228,7 +234,7 @@ public final class StdAudio {
      * Write an array of samples (between -1.0 and +1.0) to standard audio. If a
      * sample is outside the range, it will be clipped.
      */
-    public static void play(Note note, double[] input, double duration) {
+    public void play(Note note, double[] input, double duration) {
         play(input);
         notifyListeners(new AudioEvent(AudioEvent.Type.PLAY, note, duration));
     }
@@ -237,7 +243,7 @@ public final class StdAudio {
      * Removes the given audio event listener from being notified of future
      * audio events, if it was present.  If not present, has no effect.
      */
-    public static void removeAudioEventListener(AudioEventListener listener) {
+    public void removeAudioEventListener(AudioEventListener listener) {
         listeners.remove(listener);
     }
 
@@ -245,7 +251,7 @@ public final class StdAudio {
      * Sets whether the audio system is muted.
      * If audio is muted, notes do not play and playing methods return immediately.
      */
-    public static void setMute(boolean mute) {
+    public void setMute(boolean mute) {
         muted = mute;
         notifyListeners(new AudioEvent(mute ? AudioEvent.Type.MUTE : AudioEvent.Type.UNMUTE));
     }
@@ -254,7 +260,7 @@ public final class StdAudio {
      * Sets whether the audio system is paused.
      * If audio is paused, playing methods "block" in an infinite while loop.
      */
-    public static void setPaused(boolean pause) {
+    public void setPaused(boolean pause) {
         paused = pause;
         notifyListeners(new AudioEvent(pause ? AudioEvent.Type.PAUSE : AudioEvent.Type.UNPAUSE));
     }
@@ -262,7 +268,7 @@ public final class StdAudio {
     /*
      * Informs all added audio event listeners of the given event.
      */
-    private static void notifyListeners(AudioEvent event) {
+    private void notifyListeners(AudioEvent event) {
         for (AudioEventListener listener : listeners) {
             listener.onAudioEvent(event);
         }
@@ -271,7 +277,7 @@ public final class StdAudio {
     /*
      * Maintenance to be done before playing; pause/mute management.
      */
-    private static void prePlay() {
+    private void prePlay() {
         if (muted) {
             return;
         }
@@ -289,22 +295,24 @@ public final class StdAudio {
      */
     public static void main(String[] args) {
         // 440 Hz for 1 sec
+        StdAudio stdAudio = StdAudio.getInstance();
+
         double freq = 440.0;
         for (int i = 0; i <= StdAudio.SAMPLE_RATE; i++) {
-            StdAudio.play(0.5 * Math.sin(2 * Math.PI * freq * i / StdAudio.SAMPLE_RATE));
+            stdAudio.play(0.5 * Math.sin(2 * Math.PI * freq * i / StdAudio.SAMPLE_RATE));
         }
 
         // scale increments
         int[] steps = {0, 2, 4, 5, 7, 9, 11, 12};
         for (int i : steps) {
             double hz = 440.0 * Math.pow(2, i / 12.0);
-            StdAudio.play(note(hz, 1.0, 0.5));
+            stdAudio.play(stdAudio.note(hz, 1.0, 0.5));
         }
 
         // need to call this in non-interactive stuff so the program doesn't
         // terminate
         // until all the sound leaves the speaker.
-        StdAudio.close();
+        stdAudio.close();
 
         // need to terminate a Java program with sound
         System.exit(0);

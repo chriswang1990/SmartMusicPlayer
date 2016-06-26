@@ -32,6 +32,7 @@ public class MusicPlayer implements ActionListener, StdAudio.AudioEventListener 
     private JSlider currentTimeSlider;
     private JPanel time, timeLabels, buttons, tempo;
     private JButton load, play, pause, stop, up, down, reverse, changeTempo;
+    private StdAudio stdAudio = StdAudio.getInstance();
 
     //these are the two labels that indicate time
     // to the right of the slider
@@ -55,7 +56,7 @@ public class MusicPlayer implements ActionListener, StdAudio.AudioEventListener 
         song = null;
         createComponents();
         doLayout();
-        StdAudio.addAudioEventListener(this);
+        stdAudio.addAudioEventListener(this);
         frame.setVisible(true);
     }
 
@@ -70,16 +71,16 @@ public class MusicPlayer implements ActionListener, StdAudio.AudioEventListener 
                 playSong();
                 break;
             case "Pause":
-                StdAudio.setPaused(!StdAudio.isPaused());
+                stdAudio.setPaused(!stdAudio.isPaused());
                 pause.setText("Resume");
                 break;
             case "Resume":
-                StdAudio.setPaused(!StdAudio.isPaused());
+                stdAudio.setPaused(!stdAudio.isPaused());
                 pause.setText("Pause");
                 break;
             case "Stop":
-                StdAudio.setMute(true);
-                StdAudio.setPaused(false);
+                stdAudio.setMute(true);
+                stdAudio.setPaused(false);
                 playing = false;
                 break;
             case "Load":
@@ -337,7 +338,7 @@ public class MusicPlayer implements ActionListener, StdAudio.AudioEventListener 
             setCurrentTime(0.0);
             Thread playThread = new Thread(new Runnable() {
                 public void run() {
-                    StdAudio.setMute(false);
+                    stdAudio.setMute(false);
                     playing = true;
                     doEnabling();
                     String title = song.getTitle();
