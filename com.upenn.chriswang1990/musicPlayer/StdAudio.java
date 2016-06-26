@@ -94,10 +94,6 @@ public final class StdAudio {
             return duration;
         }
 
-        public Note getNote() {
-            return note;
-        }
-
         public Type getType() {
             return type;
         }

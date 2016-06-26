@@ -21,10 +21,10 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
-public class MusicPlayer implements ActionListener, musicPlayer.StdAudio.AudioEventListener {
+public class MusicPlayer implements ActionListener, StdAudio.AudioEventListener {
 
     // instance variables
-    private musicPlayer.Song song;
+    private Song song;
     private boolean playing; // whether a song is currently playing
     private JFrame frame;
     private JFileChooser fileChooser;
@@ -55,7 +55,7 @@ public class MusicPlayer implements ActionListener, musicPlayer.StdAudio.AudioEv
         song = null;
         createComponents();
         doLayout();
-        musicPlayer.StdAudio.addAudioEventListener(this);
+        StdAudio.addAudioEventListener(this);
         frame.setVisible(true);
     }
 
@@ -70,16 +70,16 @@ public class MusicPlayer implements ActionListener, musicPlayer.StdAudio.AudioEv
                 playSong();
                 break;
             case "Pause":
-                musicPlayer.StdAudio.setPaused(!musicPlayer.StdAudio.isPaused());
+                StdAudio.setPaused(!StdAudio.isPaused());
                 pause.setText("Resume");
                 break;
             case "Resume":
-                musicPlayer.StdAudio.setPaused(!musicPlayer.StdAudio.isPaused());
+                StdAudio.setPaused(!StdAudio.isPaused());
                 pause.setText("Pause");
                 break;
             case "Stop":
-                musicPlayer.StdAudio.setMute(true);
-                musicPlayer.StdAudio.setPaused(false);
+                StdAudio.setMute(true);
+                StdAudio.setPaused(false);
                 playing = false;
                 break;
             case "Load":
@@ -136,10 +136,10 @@ public class MusicPlayer implements ActionListener, musicPlayer.StdAudio.AudioEv
      * Called when audio events occur in the musicPlayer.StdAudio library. We use this to
      * set the displayed current time in the slider.
      */
-    public void onAudioEvent(musicPlayer.StdAudio.AudioEvent event) {
+    public void onAudioEvent(StdAudio.AudioEvent event) {
         // update current time
-        if (event.getType() == musicPlayer.StdAudio.AudioEvent.Type.PLAY
-              || event.getType() == musicPlayer.StdAudio.AudioEvent.Type.STOP) {
+        if (event.getType() == StdAudio.AudioEvent.Type.PLAY
+              || event.getType() == StdAudio.AudioEvent.Type.STOP) {
             setCurrentTime(getCurrentTime() + event.getDuration());
         }
     }
@@ -337,7 +337,7 @@ public class MusicPlayer implements ActionListener, musicPlayer.StdAudio.AudioEv
             setCurrentTime(0.0);
             Thread playThread = new Thread(new Runnable() {
                 public void run() {
-                    musicPlayer.StdAudio.setMute(false);
+                    StdAudio.setMute(false);
                     playing = true;
                     doEnabling();
                     String title = song.getTitle();
